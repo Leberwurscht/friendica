@@ -7,11 +7,13 @@ require_once('include/crypto.php');
 require_once('include/Photo.php');
 
 
-function get_feed_for(&$a, $dfrn_id, $owner_nick, $last_update, $direction = 0) {
-
+function get_feed_for(&$a, $identifier, $owner_nick, $last_update, $direction = 0) {
+	// $identifier must be empty or the DFRN id, $direction must be -1, 0, 1 to indicate who has the
+	// public key and whether it is a duplex connection.
+	// Alternatively, you can set $direction to -2 and identifier to a contact id.
 
 	$sitefeed    = ((strlen($owner_nick)) ? false : true); // not yet implemented, need to rewrite huge chunks of following logic
-	$public_feed = (($dfrn_id) ? false : true);
+	$public_feed = (($identifier) ? false : true);
 	$starred     = false;   // not yet implemented, possible security issues
 	$converse    = false;
 
@@ -52,16 +54,19 @@ function get_feed_for(&$a, $dfrn_id, $owner_nick, $last_update, $direction = 0) 
 		$sql_extra = '';
 		switch($direction) {
 			case (-1):
-				$sql_extra = sprintf(" AND `issued-id` = '%s' ", dbesc($dfrn_id));
-				$my_id = $dfrn_id;
+				$sql_extra = sprintf(" AND `issued-id` = '%s' ", dbesc($identifier));
+				$my_id = $identifier;
 				break;
 			case 0:
-				$sql_extra = sprintf(" AND `issued-id` = '%s' AND `duplex` = 1 ", dbesc($dfrn_id));
-				$my_id = '1:' . $dfrn_id;
+				$sql_extra = sprintf(" AND `issued-id` = '%s' AND `duplex` = 1 ", dbesc($identifier));
+				$my_id = '1:' . $identifier;
 				break;
 			case 1:
-				$sql_extra = sprintf(" AND `dfrn-id` = '%s' AND `duplex` = 1 ", dbesc($dfrn_id));
-				$my_id = '0:' . $dfrn_id;
+				$sql_extra = sprintf(" AND `dfrn-id` = '%s' AND `duplex` = 1 ", dbesc($identifier));
+				$my_id = '0:' . $identifier;
+				break;
+			case -2:
+				$sql_extra = sprintf(" AND `id` = %d ", intval($identifier));
 				break;
 			default:
 				return false;
@@ -142,7 +147,7 @@ function get_feed_for(&$a, $dfrn_id, $owner_nick, $last_update, $direction = 0) 
 
 	$items = $r;
 
-	$feed_template = get_markup_template(($dfrn_id) ? 'atom_feed_dfrn.tpl' : 'atom_feed.tpl');
+	$feed_template = get_markup_template((($direction!=-2) && $dfrn_id) ? 'atom_feed_dfrn.tpl' : 'atom_feed.tpl');
 
 	$atom = '';
 
