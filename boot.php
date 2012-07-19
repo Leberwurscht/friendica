@@ -138,6 +138,7 @@ define ( 'NETWORK_LINKEDIN',         'lnkd');    // LinkedIn
 define ( 'NETWORK_XMPP',             'xmpp');    // XMPP
 define ( 'NETWORK_MYSPACE',          'mysp');    // MySpace
 define ( 'NETWORK_GPLUS',            'goog');    // Google+
+define ( 'NETWORK_LIGHT',            'lght');    // light protocol - all connections are initiated by the other side
 
 define ( 'NETWORK_PHANTOM',          'unkn');    // Place holder
 
@@ -160,6 +161,7 @@ $netgroup_ids = array(
 	NETWORK_XMPP     => (-10),
 	NETWORK_MYSPACE  => (-11),
 	NETWORK_GPLUS    => (-12),
+	NETWORK_LIGHT    => (-13),
 
 	NETWORK_PHANTOM  => (-127),
 );
