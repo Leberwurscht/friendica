@@ -7,7 +7,7 @@ require_once('include/crypto.php');
 require_once('include/Photo.php');
 
 
-function get_feed_for(&$a, $identifier, $owner_nick, $last_update, $direction = 0) {
+function get_feed_for(&$a, $identifier, $owner_nick, $last_update, $direction = 0, $html=false) {
 	// $identifier must be empty or the DFRN id, $direction must be -1, 0, 1 to indicate who has the
 	// public key and whether it is a duplex connection.
 	// Alternatively, you can set $direction to -2 and identifier to a contact id.
@@ -200,6 +200,7 @@ function get_feed_for(&$a, $identifier, $owner_nick, $last_update, $direction = 
 		else {
 			$type = 'text';
 		}
+		if ($html) $type = 'html';
 
 		$atom .= atom_entry($item,$type,null,$owner,true);
 	}
